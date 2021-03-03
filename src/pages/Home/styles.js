@@ -35,7 +35,7 @@ export const CardsNavers = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: auto;
-    grid-gap: 27px;
+    grid-gap: 40px;
 `;
 
 export const CardItem = styled.div`
@@ -91,4 +91,16 @@ export const ButtonAction = styled.button`
     align-items: center;
     background: none;
     cursor: pointer
+`;
+
+export const NoData = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+`;
+
+export const TextDesc = styled.h3`
+    margin-top: 80px;
 `;

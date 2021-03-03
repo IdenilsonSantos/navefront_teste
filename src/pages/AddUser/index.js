@@ -2,18 +2,20 @@ import { Link } from 'react-router-dom';
 import { ArrowBackIos } from '@material-ui/icons';
 
 import { GlobalContainer } from '../../globalStyles';
-import { FormContainer, SubHeader, TitlePage, Form, FormGroup,
-Label, Input, ButtonSaveContainer, ButtonSave, ButtonBack } from './styles';
+import {
+    FormContainer, SubHeader, TitlePage, Form, FormGroup,
+    Label, Input, ButtonSaveContainer, ButtonSave, ButtonBack
+} from './styles';
 
 import Header from '../../components/Header';
 
 function AddUser() {
-  return (
-      <>
-      <Header/>
-      <GlobalContainer>
-          <FormContainer>
-          <SubHeader>
+    return (
+        <>
+            <Header />
+            <GlobalContainer>
+                <FormContainer>
+                    <SubHeader>
                         <Link to="/home">
                             <ButtonBack><ArrowBackIos /></ButtonBack>
                         </Link>
@@ -54,10 +56,10 @@ function AddUser() {
                             <ButtonSave onClick={""}>Salvar</ButtonSave>
                         </ButtonSaveContainer>
                     </Form>
-          </FormContainer>
-      </GlobalContainer>
-      </>
-  );
+                </FormContainer>
+            </GlobalContainer>
+        </>
+    );
 }
 
 export default AddUser;
