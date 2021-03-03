@@ -18,7 +18,7 @@ function Header() {
   return (
     <GlobalContainer>
       <MainComponent>
-        <Link>
+        <Link to={"/home" || null}>
           <Logo src={ImageLogo} />
         </Link>
         <LogoutButton onClick={handleLogout}>Sair</LogoutButton>

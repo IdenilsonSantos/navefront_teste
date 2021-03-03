@@ -1,22 +1,35 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Edit, Delete } from '@material-ui/icons';
+import { CubeSpinner } from 'react-spinners-kit'
 
 import { GlobalContainer } from "../../globalStyles";
 import {
     SubHeader, TitleSubHeader, ButtonAdd, CardsNavers, CardItem,
     CardItemImage, CardItemDetails, CardItemDetailsInfo,
-    InfoName, InfoFunction, InfoActions, ButtonAction, NoData, TextDesc
+    InfoName, InfoFunction, InfoActions, ButtonAction, NoData, TextDesc, LoadingContainer
 } from "./styles";
 
 import Header from "../../components/Header";
+import ModalShow from "../../components/Modal/ModalShow";
+
+import NoPic from '../../assets/nopic.jpg';
 
 import api from '../../services/api';
-import configHeaders from '../../services/configHeaders';
+import ModalConfirm from "../../components/Modal/ModalConfirm";
+
 
 function Home() {
 
+    const history = useHistory();
+
     const [users, setUsers] = useState([]);
+    const [errorLogin, setErrorLogin] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [userSelected, setUserSelected] = useState([]);
+    const [userIdSelect, setUserIdSelect] = useState();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpenConfirm, setModalOpenConfirm] = useState(false);
 
     useEffect(() => {
         getUsers();
@@ -24,16 +37,56 @@ function Home() {
 
     const getUsers = async () => {
         try {
-            const { data } = await api.get("navers", configHeaders);
-            setUsers(data)
+            const { data } = await api.get("navers");
+            setUsers(data);
+            setLoading(false);
+        } catch (error) {
+            setErrorLogin('Não Autorizado');
+            history.push('/', errorLogin)
+        }
+    }
+
+    const getUserId = async (id) => {
+        try {
+            const { data } = await api.get(`navers/${id}`);
+            setUserSelected(data)
         } catch (error) {
             console.log('error')
+        }
+    }
+
+    const openModal = (id) => {
+        getUserId(id);
+        setModalOpen(true);
+    }
+
+    const closeModal = () => {
+        setModalOpen(false)
+    }
+
+    const openModalConfirm = (id) => {
+        setModalOpenConfirm(true);
+        setUserIdSelect(id)
+    }
+
+    const closeModalConfirm = () => {
+        setModalOpenConfirm(false)
+    }
+
+    const handleDeleteEdit = ({ action }, id) => {
+        if (action === 'edit') {
+            history.push({ pathname: '/edit', id })
+        }
+        else {
+            openModalConfirm(id);
         }
     }
 
     return (
         <>
             <Header />
+            <ModalShow openmodal={modalOpen} closemodal={closeModal} user={userSelected} />
+            <ModalConfirm openmodalconfirm={modalOpenConfirm} userid={userIdSelect} closemodalconfirm={closeModalConfirm} />
             <GlobalContainer>
                 <SubHeader>
                     <TitleSubHeader>
@@ -43,34 +96,44 @@ function Home() {
                         <ButtonAdd>Adicionar Naver</ButtonAdd>
                     </Link>
                 </SubHeader>
+                {loading ? <LoadingContainer>
+                    <CubeSpinner size={45}
+                        frontColor="#212121"
+                        backColor="#9E9E9E"
+                        loading={loading} />
+                </LoadingContainer> : ''}
                 {
-                    users.length !== 0 ?
-                        <CardsNavers>
-                            {
-                                users.map((user) => (
-                                    <CardItem key={user.id}>
-                                        <CardItemImage src={user.url} />
-                                        <CardItemDetails>
-                                            <CardItemDetailsInfo>
-                                                <InfoName>{user.name}</InfoName>
-                                                <InfoFunction>{user.job_role}</InfoFunction>
-                                                <InfoActions>
-                                                    <ButtonAction>
-                                                        <Delete onClick={""} />
-                                                    </ButtonAction>
-                                                    <ButtonAction>
-                                                        <Edit onClick={""} />
-                                                    </ButtonAction>
-                                                </InfoActions>
-                                            </CardItemDetailsInfo>
-                                        </CardItemDetails>
-                                    </CardItem>
-                                ))
-                            }
-                        </CardsNavers>
-                        : <NoData>
-                            <TextDesc>Não há usuários cadastrados</TextDesc>
-                        </NoData>
+                    loading === false ? users.length !== 0 ?
+                    <CardsNavers>
+                        {
+                            users.map((user) => (
+                                <CardItem key={user.id}>
+                                    {
+                                        user.url !== 'test-path/image-test.png' ? <CardItemImage onClick={() => openModal(user.id)} src={user.url} /> :
+                                            <CardItemImage onClick={() => openModal(user.id)} src={NoPic} />
+                                    }
+                                    <CardItemDetails>
+                                        <CardItemDetailsInfo>
+                                            <InfoName>{user.name}</InfoName>
+                                            <InfoFunction>{user.job_role}</InfoFunction>
+                                            <InfoActions>
+                                                <ButtonAction>
+                                                    <Delete onClick={() => handleDeleteEdit({ action: 'delete' }, user.id)} />
+                                                </ButtonAction>
+                                                <ButtonAction>
+                                                    <Edit onClick={() => handleDeleteEdit({ action: 'edit' }, user.id)} />
+                                                </ButtonAction>
+                                            </InfoActions>
+                                        </CardItemDetailsInfo>
+                                    </CardItemDetails>
+                                </CardItem>
+                            ))
+                        }
+                    </CardsNavers>
+                    : <NoData>
+                        <TextDesc>Não há usuários cadastrados</TextDesc>
+                    </NoData>
+                        : ''
                 }
             </GlobalContainer>
         </>

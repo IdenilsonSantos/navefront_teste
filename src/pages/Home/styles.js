@@ -40,14 +40,14 @@ export const CardsNavers = styled.div`
 
 export const CardItem = styled.div`
     width: 280px;
-    height: 280px;
+    height: 380px;
     display: flex;
     flex-direction: column
 `;
 
 export const CardItemImage = styled.img`
     width: 100%;
-    height: 100%;
+    height: 75%;
     background-color: var(--black);
     background-size: cover;
 `;
@@ -103,4 +103,12 @@ export const NoData = styled.div`
 
 export const TextDesc = styled.h3`
     margin-top: 80px;
+`;
+
+export const LoadingContainer = styled.div`
+    width: 100%;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
