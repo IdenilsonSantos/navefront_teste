@@ -1,69 +1,84 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import {
-    Modal, ModalContainer, Message, MessageHeader,
-    ButtonClose, MessageInfoContainer, MessageInfo,
-    InfoTitle, InfoDescription, ModalActions, ConfirmAction, NoConfirmAction
-} from './styles';
+  Modal,
+  ModalContainer,
+  Message,
+  MessageHeader,
+  ButtonClose,
+  MessageInfoContainer,
+  MessageInfo,
+  InfoTitle,
+  InfoDescription,
+  ModalActions,
+  ConfirmAction,
+  NoConfirmAction,
+} from "./styles";
 
-import api from '../../../services/api';
+import api from "../../../services/api";
 
-import ModalInfo from '../ModalInfo';
+import ModalInfo from "../ModalInfo";
 
 function ModalConfirm({ openmodalconfirm, closemodalconfirm, userid }) {
+  const [modalOpen, setModalOpen] = useState(false);
 
-    const [modalOpen, setModalOpen] = useState(false);
+  const history = useHistory();
 
-    const history = useHistory();
+  const openModal = () => {
+    setModalOpen(true);
+  };
 
-    const openModal = () => {
-        setModalOpen(true);
-    }
+  const closeModal = () => {
+    setModalOpen(false);
+    history.push("/home");
+  };
 
-    const closeModal = () => {
-        setModalOpen(false);
-        history.push('/home');
-    }
+  const handleConfirm = async () => {
+    await api.delete(`navers/${userid}`).then((response) => {
+      if (response.status === 200) {
+        closemodalconfirm();
+        openModal();
+      }
+    });
+  };
 
-    const handleConfirm = async () => {
-        try {
-            const response = await api.delete(`navers/${userid}`);
-            if (response.status === 200) {
-                closemodalconfirm();
-                openModal();
-            }
-        } catch (error) {
-            console.log('error')
-        }
-    }
-
-    return (
-        <>
-            <ModalInfo openmodal={modalOpen} closemodal={closeModal} info={'excluído'} />
-            {
-                openmodalconfirm ?
-                    <Modal>
-                        <ModalContainer>
-                            <Message>
-                                <MessageHeader>
-                                    <ButtonClose onClick={closemodalconfirm}>X</ButtonClose>
-                                </MessageHeader>
-                                <MessageInfoContainer>
-                                    <MessageInfo>
-                                        <InfoTitle>Excluir Naver</InfoTitle>
-                                        <InfoDescription>Tem certeza que deseja excluir este Naver?</InfoDescription>
-                                    </MessageInfo>
-                                    <ModalActions>
-                                        <NoConfirmAction onClick={closemodalconfirm}>Cancelar</NoConfirmAction>
-                                        <ConfirmAction onClick={handleConfirm}>Excluir</ConfirmAction>
-                                    </ModalActions>
-                                </MessageInfoContainer>
-                            </Message>
-                        </ModalContainer>
-                    </Modal> : ''
-            }
-        </>);
+  return (
+    <>
+      <ModalInfo
+        openmodal={modalOpen}
+        closemodal={closeModal}
+        info={"excluído"}
+      />
+      {openmodalconfirm ? (
+        <Modal>
+          <ModalContainer>
+            <Message>
+              <MessageHeader>
+                <ButtonClose onClick={closemodalconfirm}>X</ButtonClose>
+              </MessageHeader>
+              <MessageInfoContainer>
+                <MessageInfo>
+                  <InfoTitle>Excluir Naver</InfoTitle>
+                  <InfoDescription>
+                    Tem certeza que deseja excluir este Naver?
+                  </InfoDescription>
+                </MessageInfo>
+                <ModalActions>
+                  <NoConfirmAction onClick={closemodalconfirm}>
+                    Cancelar
+                  </NoConfirmAction>
+                  <ConfirmAction onClick={handleConfirm}>Excluir</ConfirmAction>
+                </ModalActions>
+              </MessageInfoContainer>
+            </Message>
+          </ModalContainer>
+        </Modal>
+      ) : (
+        ""
+      )}
+    </>
+  );
 }
 
 export default ModalConfirm;

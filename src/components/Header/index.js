@@ -3,17 +3,16 @@ import { Link, useHistory } from "react-router-dom";
 import { GlobalContainer } from "../../globalStyles";
 import { Logo, LogoutButton, MainComponent } from "./styles";
 
-import ImageLogo from '../../assets/logo.svg';
+import ImageLogo from "../../assets/logo.svg";
 import { logout } from "../../services/auth";
 
 function Header() {
-
   const history = useHistory();
 
   const handleLogout = async () => {
     logout();
-    history.push('/');
-  }
+    history.push("/");
+  };
 
   return (
     <GlobalContainer>

@@ -26,14 +26,14 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const GlobalContainer = styled.div`
-    width: 100%;
-    height: auto;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 export { GlobalStyle, GlobalContainer };
